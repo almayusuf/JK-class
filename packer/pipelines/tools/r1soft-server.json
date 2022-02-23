@@ -1,0 +1,37 @@
+{
+  "builders": [{
+    "type": "amazon-ebs",
+    "region": "us-east-1",
+    "instance_type": "t3.micro",
+    "source_ami_filter": {
+      "filters": {
+        "virtualization-type": "hvm",
+        "name": "CentOS Linux 7 x86_64 HVM EBS ENA 1901_01-b7ee8a69-ee97-4a49-9e68-afaee216db2e-*",
+        "root-device-type": "ebs"
+      },
+      "owners": ["679593333241"],
+      "most_recent": true
+    },
+    "ssh_username": "centos",
+    "ssh_private_key_file": "~/.ssh/id_rsa",
+    "ami_name": "r1soft-server {{timestamp}}"
+  }],
+  "provisioners": [
+      {
+          "type":  "file",
+          "source": "../files/r1soft.repo",
+          "destination": "/tmp/r1soft.repo"
+      },
+      {
+        "type":  "shell",
+        "inline": [
+            "sudo mv /tmp/r1soft.repo /etc/yum.repos.d/r1soft.repo",
+            "sudo yum update -y",
+            "sudo yum install serverbackup-enterprise -y",
+            "sudo serverbackup-setup --user admin --pass r1soft --http-port 80 --https-port 443",
+            "sudo systemctl restart cdp-server",
+            "sudo systemctl restart cdp-server"
+          ]
+      }
+  ]
+}

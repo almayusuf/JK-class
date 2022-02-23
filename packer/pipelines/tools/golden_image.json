@@ -1,0 +1,25 @@
+{
+  "builders": [{
+    "ami_name": "packer-centos7-golden-ami-{{timestamp}}",
+    "instance_type": "t2.micro",
+    "region": "us-east-1",
+    "source_ami_filter": {
+    "filters": {
+    "virtualization-type": "hvm",
+    "name": "CentOS Linux 7 x86_64 HVM EBS *",
+    "root-device-type": "ebs"},
+    "owners": ["679593333241"],
+    "most_recent": true},
+    "ssh_username": "centos",
+    "type": "amazon-ebs"
+    }
+  ],
+  "provisioners": [
+    {
+      "type":  "shell",
+      "inline": [
+          "sudo yum update  -y"
+      ]
+    }
+  ]
+}

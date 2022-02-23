@@ -1,0 +1,20 @@
+{
+    "builders": [{
+      "type": "amazon-ebs",
+      "region": "{{user `region`}}",
+      "source_ami": "ami-02eac2c0129f6376b",
+      "instance_type": "t2.micro",
+      "ssh_username": "centos",
+      "ami_name": "latest-centos {{timestamp}}"
+    }],
+    "_comment": "Updated centos",
+    "provisioners": [
+        {
+            "type":  "shell",
+            "inline": [
+                "sudo yum update  -y",
+                "sudo yum install epel-release -y"
+              ]
+          }
+    ]
+}

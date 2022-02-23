@@ -1,0 +1,35 @@
+{
+    "builders": [{
+      "type": "amazon-ebs",
+      "region": "{{user `region`}}",
+      "instance_type": "{{user `instance_type`}}",
+      "source_ami_filter": {
+        "filters": {
+          "virtualization-type": "hvm",
+          "name": "CentOS Linux 7 x86_64 HVM EBS ENA 1901_01-b7ee8a69-ee97-4a49-9e68-afaee216db2e-*",
+          "root-device-type": "ebs"
+        },
+        "owners": ["679593333241"],
+        "most_recent": true
+      },
+      "ssh_username": "{{user `ssh_username`}}",
+      "ami_name": "nagiosxi {{timestamp}}"
+    }],
+    "provisioners": [
+        {
+            "type":  "file",
+            "source": "files/r1soft.repo",
+            "destination": "/tmp/r1soft.repo"
+        },
+        {
+          "type":  "shell",
+          "inline": [
+              "sudo mv /tmp/r1soft.repo /etc/yum.repos.d/r1soft.repo",
+              "sudo yum update  -y",
+              "sudo  yum install serverbackup-enterprise-agent -y",
+              "sudo systemctl enable sbm-agent",
+              "sudo curl https://assets.nagios.com/downloads/nagiosxi/install.sh | sudo sh"
+            ]
+        }
+    ]
+}

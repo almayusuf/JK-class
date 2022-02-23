@@ -1,0 +1,46 @@
+{
+    "builders": [{
+      "type": "amazon-ebs",
+      "region": "{{user `region`}}",
+      "instance_type": "{{user `instance_type`}}",
+      "source_ami_filter": {
+        "filters": {
+          "virtualization-type": "hvm",
+          "name": "CentOS Linux 7 x86_64 HVM EBS ENA 1901_01-b7ee8a69-ee97-4a49-9e68-afaee216db2e-*",
+          "root-device-type": "ebs"
+        },
+        "owners": ["679593333241"],
+        "most_recent": true
+      },
+      "ssh_username": "{{user `ssh_username`}}",
+      "ami_name": "jenkins {{timestamp}}"
+    }],
+    "provisioners": [
+        {
+            "type":  "file",
+            "source": "files/r1soft.repo",
+            "destination": "/tmp/r1soft.repo"
+        },
+        {
+          "type":  "file",
+          "source": "files/jenkins.repo",
+          "destination": "/tmp/jenkins.repo"
+        },
+        {
+          "type":  "shell",
+          "inline": [
+              "sudo mv /tmp/r1soft.repo /etc/yum.repos.d/r1soft.repo",
+              "sudo mv /tmp/jenkins.repo /etc/yum.repos.d/jenkins.repo",
+              "sudo yum update  -y",
+              "sudo  yum install serverbackup-enterprise-agent -y",
+              "sudo systemctl enable sbm-agent",
+              "sudo yum install java-1.8.0-openjdk-devel   -y",
+              "sudo rpm --import https://jenkins-ci.org/redhat/jenkins-ci.org.key",
+              "sudo yum install jenkins -y",
+              "sudo systemctl start jenkins",
+              "sudo systemctl status jenkins",
+              "sudo systemctl enable jenkins"
+            ]
+        }
+    ]
+}
