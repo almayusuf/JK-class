@@ -1,1 +1,1 @@
-# JK-class
+# JK-Class
